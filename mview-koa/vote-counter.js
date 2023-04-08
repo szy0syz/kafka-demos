@@ -1,4 +1,4 @@
-const { Kafka } = require('kafkajs')
+const { Kafka } = require('kafkajs');
 
 const kafka = new Kafka({
   clientId: 'vote-counter',
@@ -19,6 +19,7 @@ const voteCounts = {};
 
   await consumer.run({
     eachMessage: async ({ message }) => {
+      console.log('view-counter message:', message);
       const { candidate } = JSON.parse(message.value.toString());
       if (!voteCounts[candidate]) {
         voteCounts[candidate] = 0;

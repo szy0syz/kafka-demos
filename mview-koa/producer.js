@@ -1,26 +1,25 @@
-const { Kafka } = require('kafkajs')
-const Koa = require("koa");
-const Router = require("koa-router");
+const { Kafka } = require('kafkajs');
+const Koa = require('koa');
+const Router = require('koa-router');
 const { koaBody } = require('koa-body');
 
-
 const kafka = new Kafka({
-  clientId: "voting-producer",
-  brokers: ["localhost:9092"],
+  clientId: 'voting-producer',
+  brokers: ['localhost:9092'],
 });
 
 const producer = kafka.producer();
-const topic = "vote-events";
+const topic = 'vote-events';
 
 const app = new Koa();
 const router = new Router();
 
-router.post("/vote", async (ctx) => {
+router.post('/vote', async (ctx) => {
   const { candidate } = ctx.request.body;
 
   if (!candidate) {
     ctx.status = 400;
-    ctx.body = { error: "Missing candidate" };
+    ctx.body = { error: 'Missing candidate' };
     return;
   }
 
@@ -38,5 +37,5 @@ app.use(koaBody());
 app.use(router.routes());
 
 app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+  console.log('Server is running on http://localhost:3000');
 });
