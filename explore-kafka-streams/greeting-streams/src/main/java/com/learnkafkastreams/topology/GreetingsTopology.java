@@ -8,21 +8,28 @@ import org.apache.kafka.streams.kstream.Printed;
 import org.apache.kafka.streams.kstream.Produced;
 
 public class GreetingsTopology {
-  public  static String GREETINGS = "greetings";
+  public static String GREETINGS = "greetings";
 
-  public  static String GREETINGS_UPPERCASE = "greetings_uppercase";
+  public static String GREETINGS_UPPERCASE = "greetings_uppercase";
+  public static String GREETINGS_CHINESE = "greetings_chinese";
 
-  public  static Topology buildTopology() {
+  public static Topology buildTopology() {
     StreamsBuilder streamsBuilder = new StreamsBuilder();
 
     var greetingsStream = streamsBuilder
         .stream(GREETINGS,
             Consumed.with(Serdes.String(), Serdes.String()));
 
-    greetingsStream
-        .print(Printed.<String, String>toSysOut().withLabel("greetingsStream"));
+    var greetingsChineseStream = streamsBuilder
+        .stream(GREETINGS_CHINESE,
+            Consumed.with(Serdes.String(), Serdes.String()));
 
-    var modifiedStream =greetingsStream
+    var mergedStream = greetingsStream.merge(greetingsChineseStream);
+
+    mergedStream
+        .print(Printed.<String, String>toSysOut().withLabel("MergedStream"));
+
+    var modifiedStream = mergedStream
         .mapValues(((readOnlyKey, value) -> value.toUpperCase()));
 
     modifiedStream

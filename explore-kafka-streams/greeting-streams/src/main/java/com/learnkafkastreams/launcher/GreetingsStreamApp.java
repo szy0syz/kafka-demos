@@ -21,8 +21,13 @@ public class GreetingsStreamApp {
     properties.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
     properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 
-//    createTopics(properties,
-//        List.of(GreetingsTopology.GREETINGS, GreetingsTopology.GREETINGS_UPPERCASE));
+    createTopics(
+        properties,
+        List.of(
+            GreetingsTopology.GREETINGS, GreetingsTopology.GREETINGS_UPPERCASE,
+            GreetingsTopology.GREETINGS_CHINESE
+        )
+    );
 
     var greetingsTopology = GreetingsTopology.buildTopology();
 
@@ -40,7 +45,7 @@ public class GreetingsStreamApp {
   private static void createTopics(Properties config, List<String> greetings) {
 
     AdminClient admin = AdminClient.create(config);
-    var partitions = 2;
+    var partitions = 1;
     short replication = 1;
 
     var newTopics = greetings
